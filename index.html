@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primary 5 Maths Quiz</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      padding: 20px;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    .question {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .options button {
+      display: block;
+      background-color: #e0f7fa;
+      border: 2px solid #00796b;
+      color: #00796b;
+      margin: 8px 0;
+      padding: 10px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .options button.selected {
+      background-color: #b2ebf2;
+      font-weight: bold;
+    }
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .controls button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+      color: #d32f2f;
+    }
+    #submitBtn {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+    }
+    #review {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>Primary 5 Maths Quiz</h2>
+    <div id="timer">Time left: 30:00</div>
+    <div id="quiz"></div>
+    <div class="controls">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+      <button id="submitBtn" onclick="submitQuiz()">Submit</button>
+    </div>
+    <div id="result"></div>
+    <div id="review"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "1. What is 15 + 27?", options: ["42", "32", "52", "40"], answer: "42" },
+      { question: "2. What is the next even number after 48?", options: ["49", "50", "51", "52"], answer: "50" },
+      { question: "3. A triangle has how many sides?", options: ["3", "4", "5", "6"], answer: "3" },
+      { question: "4. 5 x 6 = ?", options: ["30", "35", "25", "40"], answer: "30" },
+      { question: "5. What is the value of 100 - 55?", options: ["35", "45", "50", "60"], answer: "45" },
+      { question: "6. Which number is a multiple of 9?", options: ["18", "20", "15", "17"], answer: "18" },
+      { question: "7. 1/2 of 12 is?", options: ["5", "6", "8", "7"], answer: "6" },
+      { question: "8. 100 cm is equal to?", options: ["1 m", "10 m", "1000 m", "100 m"], answer: "1 m" },
+      { question: "9. Which one is a 3D shape?", options: ["Square", "Triangle", "Cuboid", "Circle"], answer: "Cuboid" },
+      { question: "10. What is 9 squared?", options: ["81", "72", "90", "98"], answer: "81" },
+      { question: "11. If a book costs 10 cedis, how many can you buy with 50 cedis?", options: ["2", "3", "4", "5"], answer: "5" },
+      { question: "12. What is the place value of 6 in 362?", options: ["Units", "Tens", "Hundreds", "Thousands"], answer: "Tens" },
+      { question: "13. 25 ÷ 5 = ?", options: ["4", "5", "6", "3"], answer: "5" },
+      { question: "14. 3/4 is the same as?", options: ["0.25", "0.5", "0.75", "1"], answer: "0.75" },
+      { question: "15. How many minutes are in half an hour?", options: ["15", "30", "45", "60"], answer: "30" },
+      { question: "16. What is 7 + 8?", options: ["14", "15", "16", "17"], answer: "15" },
+      { question: "17. Which of these is a prime number?", options: ["6", "9", "11", "15"], answer: "11" },
+      { question: "18. A rectangle has how many corners?", options: ["2", "3", "4", "5"], answer: "4" },
+      { question: "19. What is the missing number: 10, 20, __, 40", options: ["25", "30", "35", "45"], answer: "30" },
+      { question: "20. 9 + 6 = ?", options: ["14", "15", "16", "17"], answer: "15" },
+      { question: "21. Which one is larger: 0.7 or 0.65?", options: ["0.65", "0.7", "Same", "0.06"], answer: "0.7" },
+      { question: "22. What is 2 x 12?", options: ["22", "24", "26", "28"], answer: "24" },
+      { question: "23. If you divide 100 by 2, what do you get?", options: ["25", "50", "75", "100"], answer: "50" },
+      { question: "24. What shape has only 1 curved side?", options: ["Square", "Triangle", "Rectangle", "Circle"], answer: "Circle" },
+      { question: "25. Which is not an even number?", options: ["8", "12", "15", "20"], answer: "15" },
+      { question: "26. How many tens are in 90?", options: ["7", "8", "9", "10"], answer: "9" },
+      { question: "27. What is 10% of 100?", options: ["5", "10", "20", "25"], answer: "10" },
+      { question: "28. Which is greater: 3/4 or 2/3?", options: ["3/4", "2/3", "Same", "1/2"], answer: "3/4" },
+      { question: "29. What is 7 x 7?", options: ["49", "56", "64", "72"], answer: "49" },
+      { question: "30. What is the sum of angles in a triangle?", options: ["90°", "180°", "270°", "360°"], answer: "180°" }
+    ];
+
+    let currentQuestion = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let timer = 30 * 60;
+
+    function showQuestion(index) {
+      const q = questions[index];
+      const quizDiv = document.getElementById('quiz');
+      quizDiv.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map((opt, i) => `<button onclick="selectAnswer(${index}, '${opt}', this)" class="${userAnswers[index] === opt ? 'selected' : ''}">${opt}</button>`).join('')}
+        </div>
+      `;
+    }
+
+    function selectAnswer(qIndex, answer, button) {
+      userAnswers[qIndex] = answer;
+      document.querySelectorAll('.options button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      setTimeout(() => nextQuestion(), 500);
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+      }
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      questions.forEach((q, i) => {
+        if (userAnswers[i] === q.answer) score++;
+      });
+      document.getElementById('result').innerHTML = `<h3 style="font-family: Georgia;">You scored ${score} out of ${questions.length}</h3>`;
+      document.getElementById('quiz').style.display = 'none';
+      document.querySelector('.controls').style.display = 'none';
+      showReview();
+    }
+
+    function showReview() {
+      const review = document.getElementById('review');
+      review.innerHTML = `<h4>Review Answers:</h4>` +
+        questions.map((q, i) => `
+          <p>
+            <strong>${q.question}</strong><br>
+            Your answer: ${userAnswers[i] || 'No answer'}<br>
+            Correct answer: ${q.answer}
+          </p>
+        `).join('');
+    }
+
+    function updateTimer() {
+      const timerDiv = document.getElementById('timer');
+      const minutes = Math.floor(timer / 60);
+      const seconds = timer % 60;
+      timerDiv.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+      if (timer > 0) {
+        timer--;
+        setTimeout(updateTimer, 1000);
+      } else {
+        submitQuiz();
+      }
+    }
+
+    showQuestion(currentQuestion);
+    updateTimer();
+  </script>
+</body>
+</html>
